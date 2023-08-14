@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Module/Script Name: utils
+Module/Script Name: helpers
 Author: Spring
-Date: 05/08/2023
+Date: 14/08/2023
 Description: 
 """
-
-import os
+from .models import Message
 from typing import Any
 
 import requests
@@ -74,3 +73,12 @@ def get_weixin_phone(phone_code: str) -> Any:
         if data['errmsg'] == 'ok':
             return data['phone_info']['phoneNumber']
     return None
+
+
+def send_message(receiver, m_type, content):
+    message = Message(
+        content=content,
+        type=m_type
+    )
+    message.save()
+    message.receiver.add(receiver)

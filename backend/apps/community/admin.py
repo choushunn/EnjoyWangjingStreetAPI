@@ -1,28 +1,6 @@
 from django.contrib import admin
 
-from .models import WeChatUser, Evaluation, Feedback, Favorite, Message, Consult, Report, ReportImage, ConsultPhone
-
-
-# Register your models here.
-
-
-@admin.register(WeChatUser)
-class WeChatUserAdmin(admin.ModelAdmin):
-    """
-    微信用户管理
-    """
-    fields = ('open_id', 'nickname', 'avatar', 'phone', 'address', 'gender', 'role')
-    list_display = (
-        'id', 'open_id', 'nickname', 'phone', 'address', 'gender', 'role', 'is_active', 'created_at',
-        'updated_at')
-    list_display_links = ('id', 'open_id', 'nickname', 'phone',)
-    list_filter = ('gender', 'role', 'is_active',)
-    ordering = list_display
-    list_editable = ('is_active', 'gender', 'role')
-    search_fields = ('open_id', 'nickname', 'phone', 'address')
-    date_hierarchy = 'created_at'
-    exclude = ('id', 'is_deleted',)
-    readonly_fields = ('id', 'created_at', 'updated_at')
+from .models import Evaluation, Feedback, Favorite, Consult, Report, ConsultPhone
 
 
 @admin.register(Evaluation)
@@ -111,23 +89,6 @@ class FavoriteAdmin(admin.ModelAdmin):
     list_filter = ('is_active',)
     ordering = list_display
     list_editable = ('is_active',)
-    date_hierarchy = 'created_at'
-    exclude = ('is_deleted',)
-    readonly_fields = ('id', 'created_at', 'updated_at')
-
-
-@admin.register(Message)
-class MessageAdmin(admin.ModelAdmin):
-    """
-    消息管理
-    """
-    fields = ('content', 'user')
-    list_display = ('id', 'user', 'content', 'is_active', 'created_at', 'updated_at')
-    list_display_links = ('id',)
-    list_filter = ('is_active',)
-    ordering = list_display
-    list_editable = ('is_active',)
-    # search_fields = ('title', 'content',)
     date_hierarchy = 'created_at'
     exclude = ('is_deleted',)
     readonly_fields = ('id', 'created_at', 'updated_at')

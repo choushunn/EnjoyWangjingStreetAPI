@@ -1,8 +1,6 @@
 from django.core.validators import RegexValidator
 from django.db import models
-from django.forms import ClearableFileInput
-from django.template import loader
-from django.utils.safestring import mark_safe
+
 
 from ..common.models import TimestampStatusMixin
 from ..community.models import WeChatUser

@@ -8,6 +8,7 @@ from .serializers import AppointmentSerializer, TicketSerializer, TicketTypeSeri
     AppointmentTypeSerializer, TicketImageSerializer
 
 from ..common.auth import OpenidAuthentication
+from ..system.helpers import send_message
 
 
 class AppointmentTypeViewSet(viewsets.ReadOnlyModelViewSet):
@@ -41,6 +42,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
+        send_message(request.user.id, m_type="服务预约", content=serializer.validated_data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     @action(detail=False, methods=['get'])

@@ -1,7 +1,8 @@
 from adminlteui.core import AdminlteConfig
 from django.contrib import admin
 
-from .models import Carousel, SystemParams, MenuCategory, MenuItem, Pages
+from .models import Carousel, SystemParams, MenuCategory, MenuItem, Pages, Message
+from ..community.models import WeChatUser
 
 admin.site.site_title = "微信小程序后台管理系统"
 admin.site.site_header = "乐享王井街"
@@ -125,3 +126,38 @@ class PagesAdmin(admin.ModelAdmin):
     """
     fields = ('title', 'content')
     list_display = ('id', 'title', 'is_active', 'created_at', 'updated_at')
+
+
+@admin.register(Message)
+class MessageAdmin(admin.ModelAdmin):
+    """
+    消息管理
+    """
+    fields = ('type', 'content', 'receiver')
+    list_display = ('id', 'type', 'is_read', 'is_active', 'created_at', 'updated_at')
+    list_display_links = ('id',)
+    list_filter = ('is_active',)
+    ordering = list_display
+    list_editable = ('is_active',)
+    date_hierarchy = 'created_at'
+    exclude = ('is_deleted',)
+    readonly_fields = ('id', 'created_at', 'updated_at')
+
+
+@admin.register(WeChatUser)
+class WeChatUserAdmin(admin.ModelAdmin):
+    """
+    微信用户管理
+    """
+    fields = ('open_id', 'nickname', 'avatar', 'phone', 'address', 'gender', 'role')
+    list_display = (
+        'id', 'open_id', 'nickname', 'phone', 'address', 'gender', 'role', 'is_active', 'created_at',
+        'updated_at')
+    list_display_links = ('id', 'open_id', 'nickname', 'phone',)
+    list_filter = ('gender', 'role', 'is_active',)
+    ordering = list_display
+    list_editable = ('is_active', 'gender', 'role')
+    search_fields = ('open_id', 'nickname', 'phone', 'address')
+    date_hierarchy = 'created_at'
+    exclude = ('id', 'is_deleted',)
+    readonly_fields = ('id', 'created_at', 'updated_at')

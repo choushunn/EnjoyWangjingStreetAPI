@@ -14,9 +14,10 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 
 from . import settings
 from rest_framework.routers import DefaultRouter
@@ -27,13 +28,13 @@ from apps.work import views as work_views
 from apps.system import views as system_views
 
 router = DefaultRouter()
-router.register(r'user', community_views.WeChatUserViewSet)
+
 # router.register(r'login', community_views.WeChatUserViewSet)
 router.register(r'evaluation', community_views.EvaluationViewSet)
 router.register(r'feedback_image', community_views.FeedbackImagesViewSet)
 router.register(r'feedback', community_views.FeedbackViewSet)
 router.register(r'favorite', community_views.FavoriteViewSet)
-router.register(r'message', community_views.MessageViewSet)
+
 router.register(r'consult', community_views.ConsultViewSet)
 router.register(r'consult_phone', community_views.ConsultPhoneViewSet)
 router.register(r'report_image', community_views.ReportImageViewSet)
@@ -48,6 +49,8 @@ router.register(r'carousel', system_views.CarouselViewSet)
 router.register(r'system_params', system_views.SystemParamsViewSet)
 router.register(r'menu_category', system_views.MenuCategoryViewSet)
 router.register(r'pages', system_views.PagesViewSet)
+router.register(r'message', system_views.MessageViewSet)
+router.register(r'user', system_views.WeChatUserViewSet)
 router.register(r'appointment', work_views.AppointmentViewSet)
 router.register(r'appointment_type', work_views.AppointmentTypeViewSet)
 router.register(r'appointment_time', work_views.AppointmentTimeViewSet)

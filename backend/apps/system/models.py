@@ -5,6 +5,46 @@ from ..common.models import TimestampStatusMixin
 
 # Create your models here.
 
+class WeChatUser(TimestampStatusMixin):
+    """
+    微信登录用户
+    """
+    GENDER = (
+        (1, "男"),
+        (2, "女"),
+        (3, "保密"),
+    )
+    ROLES = (
+        (0, '用户'),
+        (1, '工作人员'),
+        (2, '管理员'),
+        (3, '超级管理员'),
+    )
+    objects = models.Manager()
+    open_id = models.CharField(max_length=255, unique=True, verbose_name='微信用户唯一标识')
+    nickname = models.CharField(max_length=100, verbose_name='昵称')
+    avatar = models.ImageField(upload_to='upload/avatar', verbose_name='头像')
+    phone = models.CharField(max_length=255, null=True, blank=True, verbose_name='手机号码')
+    address = models.CharField(max_length=255, null=True, blank=True, verbose_name='地址')
+    gender = models.IntegerField(default=3, choices=GENDER, null=True, blank=True, verbose_name='性别')
+    role = models.IntegerField(default=0, choices=ROLES, null=True, blank=True, verbose_name='角色')
+    name = models.CharField(max_length=100, null=True, blank=True, verbose_name='姓名')
+
+    class Meta:
+        verbose_name = '微信用户'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.nickname
+
+    @property
+    def is_authenticated(self):
+        """
+        Always return True. This is a way to tell if the user has been
+        authenticated in templates.
+        """
+        return True
+
 
 class ActiveCarouselManager(models.Manager):
     def get_queryset(self):
@@ -99,3 +139,22 @@ class Pages(TimestampStatusMixin):
 
     def __str__(self):
         return self.title
+
+
+class Message(TimestampStatusMixin):
+    """
+    系统消息
+    """
+    objects = models.Manager()
+    receiver = models.ManyToManyField(WeChatUser, verbose_name='接收者',
+                                      blank=True)
+    type = models.CharField(max_length=100, verbose_name='消息类型')
+    content = models.TextField(verbose_name='消息内容')
+    is_read = models.BooleanField(default=False, verbose_name='是否已读')
+
+    class Meta:
+        verbose_name = '消息管理'
+        verbose_name_plural = verbose_name
+
+    # def __str__(self):
+    #     return self.sender
