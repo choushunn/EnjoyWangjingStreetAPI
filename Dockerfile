@@ -7,7 +7,7 @@ WORKDIR /app
 # 复制文件到镜像中的 /app 目录下
 COPY ./backend /app
 COPY ./requirements.txt /app
-COPY ./entrypoint.sh /app
+#COPY ./entrypoint.sh /app
 
 # 安装依赖
 RUN pip install --no-cache-dir -r requirements.txt -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
