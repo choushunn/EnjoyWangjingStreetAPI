@@ -54,7 +54,10 @@ class PagesViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PagesSerializer
 
 
-class MessageViewSet(viewsets.ReadOnlyModelViewSet):
+class MessageViewSet(mixins.UpdateModelMixin,
+                     mixins.DestroyModelMixin,
+                     mixins.ListModelMixin,
+                     GenericViewSet):
     """
     消息接口 GET
     """
@@ -66,6 +69,13 @@ class MessageViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         # 当前用户的数据
         return self.queryset.filter(receiver=self.request.user.id).order_by('-created_at')
+
+    @action(detail=True, methods=['post'])
+    def mark_as_read(self, request, pk=None):
+        message = self.get_object()
+        message.is_read = True
+        message.save()
+        return Response({'status': 'success', 'message': '消息已标记为已读'})
 
     @action(detail=False, methods=['get'])
     def by_user(self, request):
