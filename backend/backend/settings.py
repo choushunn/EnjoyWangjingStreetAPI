@@ -154,7 +154,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # }
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = ['https://api.yfengl.cn', 'https://api.enjoywangjing.cn']
+CSRF_TRUSTED_ORIGINS = ['https://*.yfengl.cn', 'https://*.enjoywangjing.cn']
+
 CORS_ALLOW_HEADERS = [
     "accept",
     "accept-encoding",
