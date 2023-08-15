@@ -29,7 +29,7 @@ from apps.system import views as system_views
 
 router = DefaultRouter()
 
-# router.register(r'login', community_views.WeChatUserViewSet)
+
 router.register(r'evaluation', community_views.EvaluationViewSet)
 router.register(r'feedback_image', community_views.FeedbackImagesViewSet)
 router.register(r'feedback', community_views.FeedbackViewSet)
