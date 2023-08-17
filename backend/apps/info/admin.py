@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.db import models
 from django.forms import ClearableFileInput
 from django.utils.html import format_html
+from mdeditor.widgets import MDEditorWidget
 
 # Register your models here.
 
@@ -85,7 +86,6 @@ class NewsAdmin(admin.ModelAdmin):
         })
     )
     filter_horizontal = ('tags',)
-
     def save_model(self, request, obj, form, change):
         # 获取当前登录用户
         current_user = request.user
@@ -100,7 +100,7 @@ class ActivityAdmin(admin.ModelAdmin):
     """
     活动管理
     """
-    fields = ('title', 'summary', 'content', 'category', 'image')
+    fields = ('title', 'content', 'summary', 'category', 'image')
     list_display = ('id', 'title', 'is_active', 'created_at', 'updated_at')
     list_display_links = ('id', 'title',)
     list_filter = ('is_active',)
@@ -123,7 +123,7 @@ class ActivityAdmin(admin.ModelAdmin):
 
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'sender', 'title',  'is_active', 'created_at', 'updated_at')
+    list_display = ('id', 'sender', 'title', 'is_active', 'created_at', 'updated_at')
     list_display_links = ('id', 'title',)
     list_filter = ('is_active',)
     ordering = list_display

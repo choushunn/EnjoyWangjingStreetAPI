@@ -15,6 +15,6 @@ pyjwt==2.8.0
 pymysql==1.1.0
 redis==4.6.0
 gunicorn
-supervisor
-django-adminlte-ui
 requests
+django-mdeditor
+django-simpleui

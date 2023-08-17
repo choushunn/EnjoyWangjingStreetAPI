@@ -1,5 +1,6 @@
 from adminlteui.core import AdminlteConfig
 from django.contrib import admin
+from simpleui.admin import AjaxAdmin
 
 from .models import Carousel, SystemParams, MenuCategory, MenuItem, Pages, Message
 from ..community.models import WeChatUser
@@ -91,7 +92,7 @@ class MenuCategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(MenuItem)
-class MenuItemAdmin(admin.ModelAdmin):
+class MenuItemAdmin(AjaxAdmin):
     """
     菜单项
     """

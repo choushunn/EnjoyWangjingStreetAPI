@@ -14,7 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-
+import debug_toolbar
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include, re_path
@@ -28,7 +28,6 @@ from apps.work import views as work_views
 from apps.system import views as system_views
 
 router = DefaultRouter()
-
 
 router.register(r'evaluation', community_views.EvaluationViewSet)
 router.register(r'feedback_image', community_views.FeedbackImagesViewSet)
@@ -61,6 +60,8 @@ router.register(r'work_type', work_views.TicketTypeViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(router.urls)),
+    path('tinymce/', include('tinymce.urls')),
+    re_path(r'mdeditor/', include('mdeditor.urls'))
 ]
 
 # 添加静态文件的 URL 映射
@@ -68,3 +69,11 @@ urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 # 添加 media 文件的 URL 映射
 urlpatterns += static('/upload/', document_root=settings.MEDIA_ROOT + '/upload/')
 urlpatterns += static('/avatar/', document_root=settings.AVATAR_ROOT)
+
+
+if settings.DEBUG:
+    # static files (images, css, javascript, etc.)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += [
+        re_path(r'^__debug__/', include(debug_toolbar.urls)),
+    ]

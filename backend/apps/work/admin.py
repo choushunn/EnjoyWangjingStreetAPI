@@ -35,7 +35,7 @@ class AppointmentAdmin(admin.ModelAdmin):
     fieldsets = (
         (
             None, {
-                'fields': ('user', 'name', 'phone', 'type', 'date','time', 'remark',)
+                'fields': ('user', 'name', 'phone', 'type', 'date', 'time', 'remark',)
             }
         ),
         (
@@ -97,7 +97,7 @@ class TicketImageInline(admin.StackedInline):
 class TicketAdmin(admin.ModelAdmin):
     inlines = [TicketImageInline]
     list_display = (
-        'id', 'user', 'worker', 'ticket_type', 'name', 'phone',  'address', 'status', 'created_at', 'updated_at')
+        'id', 'user', 'worker', 'ticket_type', 'name', 'phone', 'address', 'status', 'created_at', 'updated_at')
     ordering = ('-id',)
     list_display_links = ('id', 'user')
     readonly_fields = (
@@ -119,4 +119,4 @@ class TicketAdmin(admin.ModelAdmin):
 
 @admin.register(TicketReview)
 class TicketReviewAdmin(admin.ModelAdmin):
-    pass
+    exclude = ('is_deleted', 'is_active')

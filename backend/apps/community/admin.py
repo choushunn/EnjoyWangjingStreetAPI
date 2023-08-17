@@ -15,7 +15,7 @@ class EvaluationAdmin(admin.ModelAdmin):
     list_editable = ('is_active',)
     # search_fields = ('title', 'content',)
     date_hierarchy = 'created_at'
-    exclude = ('is_deleted',)
+    exclude = ('is_deleted', 'is_active')
     readonly_fields = ('id', 'created_at', 'updated_at')
 
 

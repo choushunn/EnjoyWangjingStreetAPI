@@ -22,6 +22,16 @@ class NewsTagsSerializer(serializers.ModelSerializer):
         exclude = ('is_active', 'is_deleted', 'updated_at', 'created_at', 'id')
 
 
+
+
+# class WeChatRichTextField(serializers.Field):
+#     def to_representation(self, value):
+#         return richtextfilter(value)
+#
+#     def to_internal_value(self, data):
+#         return data
+
+
 class NewsSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format="%Y年%m月%d日", allow_null=True, label='发布时间', )
     tags = NewsTagsSerializer(many=True)

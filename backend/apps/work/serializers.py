@@ -76,6 +76,21 @@ class TicketListSerializer(serializers.ModelSerializer):
     ticket_type_name = serializers.SerializerMethodField()
     ticket_images = TicketImageSerializer(many=True, label='图片', allow_null=True, read_only=True)
     ticket_reviews = TicketReviewSerializer(many=True, label='评论', allow_null=True)
+    updated_at = serializers.DateTimeField(format="%Y年%m月%d日 %H:%M", allow_null=True, label='更新时间',
+                                           default=timezone.now)
+
+    worker_info = serializers.SerializerMethodField()
+
+    def get_worker_info(self, obj):
+        worker = obj.worker
+        if worker:
+            return {
+                'worker_id': worker.id,
+                'worker_name': worker.nickname,
+                'worker_phone': worker.phone,
+            }
+            # return worker.nickname
+        return None
 
     def get_ticket_type_name(self, obj):
         if obj.ticket_type:
