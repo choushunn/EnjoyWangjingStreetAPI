@@ -14,7 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-import debug_toolbar
+
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include, re_path
@@ -58,10 +58,9 @@ router.register(r'work_image', work_views.TicketImageViewSet)
 router.register(r'work_type', work_views.TicketTypeViewSet)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/v1/', include(router.urls)),
-    path('tinymce/', include('tinymce.urls')),
-    re_path(r'mdeditor/', include('mdeditor.urls'))
+    re_path(r'^admin/', admin.site.urls),
+    re_path(r'^api/v1/', include(router.urls)),
+    path('mdeditor/', include('mdeditor.urls'))
 ]
 
 # 添加静态文件的 URL 映射
@@ -74,6 +73,7 @@ urlpatterns += static('/avatar/', document_root=settings.AVATAR_ROOT)
 if settings.DEBUG:
     # static files (images, css, javascript, etc.)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    import debug_toolbar
     urlpatterns += [
         re_path(r'^__debug__/', include(debug_toolbar.urls)),
     ]

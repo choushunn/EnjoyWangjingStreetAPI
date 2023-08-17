@@ -1,4 +1,4 @@
-from adminlteui.core import AdminlteConfig
+# from adminlteui.core import AdminlteConfig
 from django.contrib import admin
 from simpleui.admin import AjaxAdmin
 
@@ -9,11 +9,11 @@ admin.site.site_title = "微信小程序后台管理系统"
 admin.site.site_header = "乐享王井街"
 
 
-class MyAdminlteConfig(AdminlteConfig):
-    skin = 'green'
-    welcome_sign = '微信小程序后台管理系统'
-    show_avatar = False
-    copyright = '乐享王井街微信小程序后台管理系统'
+# class MyAdminlteConfig(AdminlteConfig):
+#     skin = 'green'
+#     welcome_sign = '微信小程序后台管理系统'
+#     show_avatar = False
+#     copyright = '乐享王井街微信小程序后台管理系统'
 
 
 # Register your models here.
@@ -152,7 +152,7 @@ class WeChatUserAdmin(admin.ModelAdmin):
     """
     fields = ('open_id', 'nickname', 'avatar', 'phone', 'address', 'gender', 'role')
     list_display = (
-        'id', 'open_id', 'nickname', 'phone', 'address', 'gender', 'role', 'is_active', 'created_at',
+        'id', 'open_id', 'nickname', 'name', 'phone', 'address', 'gender', 'role', 'is_active', 'created_at',
         'updated_at')
     list_display_links = ('id', 'open_id', 'nickname', 'phone',)
     list_filter = ('gender', 'role', 'is_active',)

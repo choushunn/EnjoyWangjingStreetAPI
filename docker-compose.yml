@@ -10,8 +10,9 @@ services:
       - db
       - redis
     environment:
-      DATABASE_URL: mysql://wx:wx@db/wx
+#      DATABASE_URL: mysql://wx:wx@db/wx
       REDIS_URL: redis://redis:6379/0
+      DATABASE_URL: mysql://root:131401@139.155.139.25:3306/wx
   #  数据库配置
   db:
     image: mysql:8

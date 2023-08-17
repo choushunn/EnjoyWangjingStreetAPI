@@ -87,15 +87,15 @@ class ConsultPhone(TimestampStatusMixin):
     """
     objects = models.Manager()
     phone = models.CharField(max_length=100, verbose_name='联系电话')
-    content = models.TextField(verbose_name='咨询内容')
-    address = models.CharField(max_length=100, blank=True, verbose_name='地址')
+    content = models.TextField(verbose_name='具体内容')
+    title = models.CharField(max_length=100, blank=True, verbose_name='咨询事项')
 
     class Meta:
         verbose_name = '电话咨询'
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return self.address
+        return self.title
 
 
 class ConsultTime(TimestampStatusMixin):

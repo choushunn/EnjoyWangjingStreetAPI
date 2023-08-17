@@ -67,8 +67,8 @@ class ConsultPhoneAdmin(admin.ModelAdmin):
     """
     电话咨询管理
     """
-    fields = ('phone', 'content', 'address')
-    list_display = ('id', 'phone', 'content', 'address', 'is_active', 'created_at', 'updated_at')
+    fields = ('title','phone', 'content', )
+    list_display = ('id', 'phone', 'content', 'title', 'is_active', 'created_at', 'updated_at')
     list_display_links = ('id', 'phone')
     list_filter = ('is_active',)
     ordering = list_display

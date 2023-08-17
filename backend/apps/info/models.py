@@ -1,8 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from djrichtextfield.models import RichTextField
 from mdeditor.fields import MDTextField
-from tinymce.models import HTMLField
 
 from ..common.models import TimestampStatusMixin
 from ..community.models import WeChatUser
