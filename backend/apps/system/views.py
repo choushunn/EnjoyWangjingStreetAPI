@@ -1,3 +1,7 @@
+import hashlib
+
+from rest_framework.views import APIView
+
 from .models import Carousel, SystemParams, MenuItem, MenuCategory, Pages, Message
 from .serializers import CarouselSerializer, SystemParamsSerializer, MenuItemSerializer, MenuCategorySerializer, \
     PagesSerializer, MessageSerializer, WeChatUserSerializer, WeChatUserCreateSerializer
@@ -8,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from rest_framework.response import Response
 from .models import WeChatUser
 
 from ..common.auth import OpenidAuthentication
@@ -143,3 +147,22 @@ class WeChatUserViewSet(mixins.CreateModelMixin,
                 return Response(resp_data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
+class CheckSignatureAPIView(APIView):
+    def get(self, request):
+        signature = request.GET.get("signature")
+        timestamp = request.GET.get("timestamp")
+        nonce = request.GET.get("nonce")
+
+        token = "Token"  # 替换为你的TOKEN
+
+        tmp_arr = [token, timestamp, nonce]
+        tmp_arr.sort()
+        tmp_str = ''.join(tmp_arr)
+        tmp_str = hashlib.sha1(tmp_str.encode()).hexdigest()
+
+        if tmp_str == signature:
+            return Response({"success": True}, status=status.HTTP_200_OK)
+        else:
+            return Response({"success": False}, status=status.HTTP_403_FORBIDDEN)

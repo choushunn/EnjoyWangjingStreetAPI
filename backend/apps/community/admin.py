@@ -1,6 +1,18 @@
 from django.contrib import admin
 
-from .models import Evaluation, Feedback, Favorite, Consult, Report, ConsultPhone
+from .models import Evaluation, Feedback, Favorite, Consult, Report, ConsultPhone, ConsultTime
+
+
+@admin.register(ConsultTime)
+class ConsultTimeAdmin(admin.ModelAdmin):
+    """
+    预约时间管理
+    """
+    fields = ('time',)
+    list_display = ('id', 'time', 'is_active', 'created_at', 'updated_at')
+    list_display_links = ('id', 'time')
+    list_editable = ('is_active',)
+    ordering = list_display
 
 
 @admin.register(Evaluation)
@@ -67,7 +79,7 @@ class ConsultPhoneAdmin(admin.ModelAdmin):
     """
     电话咨询管理
     """
-    fields = ('title','phone', 'content', )
+    fields = ('title', 'phone', 'content',)
     list_display = ('id', 'phone', 'content', 'title', 'is_active', 'created_at', 'updated_at')
     list_display_links = ('id', 'phone')
     list_filter = ('is_active',)

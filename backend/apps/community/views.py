@@ -3,12 +3,11 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-
-from .models import  Favorite, \
-    Feedback, Evaluation, Consult, Report, ConsultPhone, ReportImage, FeedbackImages
-from .serializers import  FavoriteSerializer, FeedbackSerializer, \
+from .models import Favorite, \
+    Feedback, Evaluation, Consult, Report, ConsultPhone, ReportImage, FeedbackImages, ConsultTime
+from .serializers import FavoriteSerializer, FeedbackSerializer, \
     EvaluationSerializer, ConsultSerializer, ReportSerializer, ConsultPhoneSerializer, ReportImageSerializer, \
-    FeedbackImagesSerializer
+    FeedbackImagesSerializer, ConsultTimeSerializer
 
 from ..common.auth import OpenidAuthentication
 from ..system.helpers import send_message
@@ -82,6 +81,9 @@ class ReportViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user.id).order_by('-created_at')
+
     @action(detail=False, methods=['get'])
     def by_user(self, request):
         tickets = Report.objects.filter(user=request.user.id)
@@ -95,6 +97,14 @@ class ConsultPhoneViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = ConsultPhone.objects.all()
     serializer_class = ConsultPhoneSerializer
+
+
+class ConsultTimeViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    预约时间接口 GET
+    """
+    queryset = ConsultTime.objects.all()
+    serializer_class = ConsultTimeSerializer
 
 
 class ConsultViewSet(viewsets.ModelViewSet):

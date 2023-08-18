@@ -82,3 +82,26 @@ def send_message(receiver, m_type, content):
     )
     message.save()
     message.receiver.add(receiver)
+
+
+def send_wx_message(message_data):
+    access_token = get_weixin_access_token()
+    message_data = {
+        'touser': 'open_id',
+        'template_id': 'template_id',
+        'page': 'page',
+        'data': {
+            'thing1': {
+                "value": 'name',
+            },
+            'date2': {
+                "value": 'date',
+            }
+        }
+    }
+    url = f"https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token={access_token}"
+    response = requests.post(url, json=message_data)
+    if response.status_code == 200:
+        print("订阅消息发送成功")
+    else:
+        print("订阅消息发送失败")

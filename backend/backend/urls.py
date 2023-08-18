@@ -27,6 +27,10 @@ from apps.info import views as info_views
 from apps.work import views as work_views
 from apps.system import views as system_views
 
+
+
+from apps.system.views import CheckSignatureAPIView
+
 router = DefaultRouter()
 
 router.register(r'evaluation', community_views.EvaluationViewSet)
@@ -35,6 +39,7 @@ router.register(r'feedback', community_views.FeedbackViewSet)
 router.register(r'favorite', community_views.FavoriteViewSet)
 
 router.register(r'consult', community_views.ConsultViewSet)
+router.register(r'consult_time', community_views.ConsultTimeViewSet)
 router.register(r'consult_phone', community_views.ConsultPhoneViewSet)
 router.register(r'report_image', community_views.ReportImageViewSet)
 router.register(r'report', community_views.ReportViewSet)
@@ -59,7 +64,9 @@ router.register(r'work_type', work_views.TicketTypeViewSet)
 
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
+    path('api/v1/check_signature/', CheckSignatureAPIView.as_view(), name='check_signature'),
     re_path(r'^api/v1/', include(router.urls)),
+
     path('mdeditor/', include('mdeditor.urls'))
 ]
 
@@ -69,11 +76,9 @@ urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static('/upload/', document_root=settings.MEDIA_ROOT + '/upload/')
 urlpatterns += static('/avatar/', document_root=settings.AVATAR_ROOT)
 
-
 if settings.DEBUG:
-    # static files (images, css, javascript, etc.)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     import debug_toolbar
+    # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += [
         re_path(r'^__debug__/', include(debug_toolbar.urls)),
     ]
