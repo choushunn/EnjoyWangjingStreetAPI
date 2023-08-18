@@ -51,6 +51,10 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(appointments, many=True)
         return Response(serializer.data)
 
+    def get_queryset(self):
+        # 当前用户的数据
+        return self.queryset.filter(user=self.request.user.id).order_by('-created_at')
+
 
 class TicketTypeViewSet(viewsets.ReadOnlyModelViewSet):
     """

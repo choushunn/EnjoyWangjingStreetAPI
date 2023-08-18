@@ -1,13 +1,12 @@
 from django.core.validators import RegexValidator
 from django.db import models
 
-
 from ..common.models import TimestampStatusMixin
 from ..community.models import WeChatUser
+from ..system.helpers import send_message
 
 
 class AppointmentTime(TimestampStatusMixin):
-
     time = models.CharField(max_length=100, verbose_name='预约时间段')
 
     class Meta:
@@ -33,6 +32,12 @@ class Appointment(TimestampStatusMixin):
     """
     预约管理
     """
+    STATUS_CHOICES = [
+        (0, '待审核'),
+        (1, '已通过'),
+        (2, '已驳回'),
+        (3, '已完成')
+    ]
     objects = models.Manager()
     user = models.ForeignKey(WeChatUser, on_delete=models.CASCADE, verbose_name='微信用户')
     name = models.CharField(max_length=100, verbose_name='预约人姓名')
@@ -42,13 +47,16 @@ class Appointment(TimestampStatusMixin):
     date = models.DateField(verbose_name='预约日期', blank=True, null=True)
     time = models.ForeignKey(AppointmentTime, on_delete=models.CASCADE, verbose_name='预约时间', blank=True, null=True)
     remark = models.TextField(verbose_name='其他备注信息', blank=True, null=True)
-    status = models.IntegerField(choices=[
-        (0, '待审核'),
-        (1, '已通过'),
-        (2, '已驳回'),
-        (3, '已完成')
-    ], default=0, verbose_name='预约状态')
+    status = models.IntegerField(choices=STATUS_CHOICES, default=0, verbose_name='预约状态')
     reply = models.TextField(verbose_name='回复', blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            original_instance = Appointment.objects.get(pk=self.pk)
+            if original_instance.status != self.status:
+                status_display = dict(self.STATUS_CHOICES).get(self.status)
+                send_message(self.user, m_type="预约管理", content=f"您提交的服务预约 {status_display}。")
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = '预约记录'
@@ -109,6 +117,14 @@ class Ticket(TimestampStatusMixin):
     class Meta:
         verbose_name = '工单记录'
         verbose_name_plural = verbose_name
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            original_instance = Appointment.objects.get(pk=self.pk)
+            if original_instance.status != self.status:
+                status_display = dict(self.STATUS).get(self.status)
+                send_message(self.user, m_type="居民服务", content=f"您提交的居民服务 {status_display}。")
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.user.nickname + '-'

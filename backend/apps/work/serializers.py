@@ -28,8 +28,22 @@ class AppointmentTypeSerializer(serializers.ModelSerializer):
 class AppointmentSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(format="%Y年%m月%d日 %H:%M", allow_null=True, label='预约时间',
                                            default=timezone.now)
+    updated_at = serializers.DateTimeField(format="%Y年%m月%d日 %H:%M", allow_null=True, label='更新时间',
+                                           default=timezone.now)
     type_name = serializers.SerializerMethodField()
     type_time = serializers.SerializerMethodField()
+
+    STATUS_CHOICES = ((0, '待审核'),
+                      (1, '已通过'),
+                      (2, '已驳回'),
+                      (3, '已完成'))
+    status = serializers.SerializerMethodField()
+
+    def get_status(self, obj):
+        for value, display_name in self.STATUS_CHOICES:
+            if obj.status == value:
+                return display_name
+        return None
 
     def get_type_time(self, obj):
         if obj.time:
@@ -43,7 +57,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Appointment
-        exclude = ('is_active', 'is_deleted', 'updated_at')
+        exclude = ('is_active', 'is_deleted')
 
 
 class TicketTypeSerializer(serializers.ModelSerializer):
@@ -90,6 +104,15 @@ class TicketListSerializer(serializers.ModelSerializer):
                 'worker_phone': worker.phone,
             }
             # return worker.nickname
+        return None
+
+    STATUS_CHOICES = ((0, '待处理'), (1, '处理中'), (2, '已完成'),)
+    status = serializers.SerializerMethodField()
+
+    def get_status(self, obj):
+        for value, display_name in self.STATUS_CHOICES:
+            if obj.status == value:
+                return display_name
         return None
 
     def get_ticket_type_name(self, obj):
