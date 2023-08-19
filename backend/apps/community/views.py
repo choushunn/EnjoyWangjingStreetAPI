@@ -122,7 +122,7 @@ class ConsultViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        send_message(request.user.id, content=serializer.validated_data)
+        send_message(request.user.id, m_type="预约咨询", content="您已提交预约咨询。请耐心等待工作人员的回复")
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     @action(detail=False, methods=['get'])

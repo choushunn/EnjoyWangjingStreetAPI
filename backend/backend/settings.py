@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'apps.community',
     'apps.info',
     'apps.work',
+    # 'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [

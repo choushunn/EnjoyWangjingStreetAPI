@@ -135,3 +135,20 @@ class WeChatUserSerializer(serializers.ModelSerializer):
         exclude = ('is_active', 'is_deleted', 'created_at', 'updated_at', 'open_id')
 
     readonly_fields = ('role', 'open_id')
+
+
+class WeChatUserAvatarUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WeChatUser
+        fields = ['avatar', ]
+
+    def update(self, instance, validated_data):
+        instance.avatar = validated_data.get('avatar')
+        instance.save()
+        return instance
+
+
+class WeChatUserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WeChatUser
+        fields = ['nickname', 'name', 'gender', 'address']

@@ -1,21 +1,24 @@
 import hashlib
+import os
 
+from django.http import HttpResponse
 from rest_framework.views import APIView
 
 from .models import Carousel, SystemParams, MenuItem, MenuCategory, Pages, Message
 from .serializers import CarouselSerializer, SystemParamsSerializer, MenuItemSerializer, MenuCategorySerializer, \
-    PagesSerializer, MessageSerializer, WeChatUserSerializer, WeChatUserCreateSerializer
+    PagesSerializer, MessageSerializer, WeChatUserSerializer, WeChatUserCreateSerializer, \
+    WeChatUserAvatarUpdateSerializer, WeChatUserUpdateSerializer
 
 from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from .models import WeChatUser
 
 from ..common.auth import OpenidAuthentication
+from backend.settings import AVATAR_ROOT, AVATAR_URL
 
 
 class CarouselViewSet(viewsets.ReadOnlyModelViewSet):
@@ -154,15 +157,55 @@ class CheckSignatureAPIView(APIView):
         signature = request.GET.get("signature")
         timestamp = request.GET.get("timestamp")
         nonce = request.GET.get("nonce")
+        echostr = request.GET.get("echostr")
+        token = "weChatMessagePush1"
+        if signature and timestamp and nonce:
+            data = [token, timestamp, nonce]
+            data.sort()
+            sha1 = hashlib.sha1()
+            sha1.update("".join(data).encode())
+            hashcode = sha1.hexdigest()
+            if hashcode == signature:
+                return HttpResponse(echostr)
+            else:
+                return Response(data={"echostr": echostr}, status=status.HTTP_403_FORBIDDEN)
+        return Response(data={"echostr": echostr}, status=status.HTTP_403_FORBIDDEN)
 
-        token = "Token"  # 替换为你的TOKEN
 
-        tmp_arr = [token, timestamp, nonce]
-        tmp_arr.sort()
-        tmp_str = ''.join(tmp_arr)
-        tmp_str = hashlib.sha1(tmp_str.encode()).hexdigest()
+class WeChatUserAvatarUpdateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [OpenidAuthentication]
 
-        if tmp_str == signature:
-            return Response({"success": True}, status=status.HTTP_200_OK)
-        else:
-            return Response({"success": False}, status=status.HTTP_403_FORBIDDEN)
+    def post(self, request):
+        user = request.user
+        serializer = WeChatUserAvatarUpdateSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            # 保存新头像
+            avatar = request.data.get('avatar')
+            file_extension = os.path.splitext(avatar.name)[1]
+            new_avatar_name = f"{user.open_id}{file_extension}"
+            avatar_path = os.path.join(AVATAR_ROOT, new_avatar_name)
+
+            # 将头像文件保存到指定路径
+            with open(avatar_path, 'wb') as file:
+                file.write(avatar.read())
+
+            # 更新用户对象的头像字段
+            serializer.save(avatar=os.path.join(AVATAR_URL, new_avatar_name))
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class WeChatUserUpdateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [OpenidAuthentication]
+
+    def put(self, request, *args, **kwargs):
+
+        user = request.user
+        serializer = WeChatUserUpdateSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

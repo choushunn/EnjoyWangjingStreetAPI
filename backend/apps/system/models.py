@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 
 from ..common.models import TimestampStatusMixin
@@ -52,6 +54,7 @@ class ActiveCarouselManager(models.Manager):
 
 
 class Carousel(TimestampStatusMixin):
+
     title = models.CharField(max_length=255, verbose_name='标题')
     image = models.ImageField(upload_to='upload/carousel', verbose_name='轮播图')
     target_url = models.CharField(max_length=255, default='', blank=True, verbose_name='跳转链接')
@@ -155,6 +158,3 @@ class Message(TimestampStatusMixin):
     class Meta:
         verbose_name = '消息管理'
         verbose_name_plural = verbose_name
-
-    # def __str__(self):
-    #     return self.sender

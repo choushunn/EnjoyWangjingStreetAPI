@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.core.validators import RegexValidator
 from django.db import models
 
@@ -39,13 +41,13 @@ class Appointment(TimestampStatusMixin):
         (3, '已完成')
     ]
     objects = models.Manager()
-    user = models.ForeignKey(WeChatUser, on_delete=models.CASCADE, verbose_name='微信用户')
+    user = models.ForeignKey(WeChatUser, on_delete=models.DO_NOTHING, verbose_name='微信用户')
     name = models.CharField(max_length=100, verbose_name='预约人姓名')
     phone = models.CharField(max_length=100, verbose_name='联系电话')
     type = models.ForeignKey(AppointmentType, on_delete=models.CASCADE, verbose_name='预约类型', blank=True,
                              null=True)
     date = models.DateField(verbose_name='预约日期', blank=True, null=True)
-    time = models.ForeignKey(AppointmentTime, on_delete=models.CASCADE, verbose_name='预约时间', blank=True, null=True)
+    time = models.ForeignKey(AppointmentTime, on_delete=models.DO_NOTHING, verbose_name='预约时间', blank=True, null=True)
     remark = models.TextField(verbose_name='其他备注信息', blank=True, null=True)
     status = models.IntegerField(choices=STATUS_CHOICES, default=0, verbose_name='预约状态')
     reply = models.TextField(verbose_name='回复', blank=True, null=True)
@@ -78,8 +80,10 @@ class TicketType(TimestampStatusMixin):
 
 
 class TicketImage(TimestampStatusMixin):
+    today = datetime.today()
+    folder_name = today.strftime('%Y/%m/%d')
     ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE, verbose_name='工单', related_name='ticket_images')
-    image = models.ImageField(upload_to='upload/ticket', verbose_name='图片')
+    image = models.ImageField(upload_to=F'upload/ticket{folder_name}', verbose_name='图片')
 
     class Meta:
         verbose_name = '工单图片'
@@ -99,16 +103,16 @@ class Ticket(TimestampStatusMixin):
     )
     STATUS = ((0, '待处理'), (1, '处理中'), (2, '已完成'),)
     objects = models.Manager()
-    user = models.ForeignKey(WeChatUser, on_delete=models.CASCADE, verbose_name='用户')
-    worker = models.ForeignKey(WeChatUser, on_delete=models.CASCADE, related_name='worker_tickets',
+    user = models.ForeignKey(WeChatUser, on_delete=models.DO_NOTHING, verbose_name='用户')
+    worker = models.ForeignKey(WeChatUser, on_delete=models.DO_NOTHING, related_name='worker_tickets',
                                limit_choices_to={'role__in': (1, 2)}, verbose_name='工作人员', blank=True,
                                null=True)
-    admin = models.ForeignKey(WeChatUser, on_delete=models.CASCADE, related_name='admin_tickets',
+    admin = models.ForeignKey(WeChatUser, on_delete=models.DO_NOTHING, related_name='admin_tickets',
                               limit_choices_to={'role': 2}, blank=True, null=True, verbose_name='管理员')
     name = models.CharField(max_length=30, verbose_name='姓名')
     phone = models.CharField(max_length=15, validators=[phone_regex], verbose_name='联系电话')
     address = models.CharField(max_length=100, verbose_name='地址', blank=True, null=True)
-    ticket_type = models.ForeignKey(TicketType, on_delete=models.CASCADE, verbose_name='工单类型', blank=True,
+    ticket_type = models.ForeignKey(TicketType, on_delete=models.DO_NOTHING, verbose_name='工单类型', blank=True,
                                     null=True, related_name='ticket_type')
     description = models.TextField(verbose_name='问题描述', blank=True, null=True)
     status = models.IntegerField(default=0, choices=STATUS, blank=True, null=True, verbose_name='工单状态')
@@ -134,7 +138,7 @@ class TicketReview(TimestampStatusMixin):
     """
     工单评价
     """
-    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, verbose_name='工单', related_name='ticket_reviews')
+    ticket = models.ForeignKey(Ticket, on_delete=models.DO_NOTHING, verbose_name='工单', related_name='ticket_reviews')
     comment = models.TextField(verbose_name='评价内容', blank=True, null=True)
     rating = models.IntegerField(verbose_name='评分', choices=[
         (1, '1星'),

@@ -31,6 +31,10 @@ from apps.system import views as system_views
 
 from apps.system.views import CheckSignatureAPIView
 
+from apps.system.views import WeChatUserAvatarUpdateAPIView
+
+from apps.system.views import WeChatUserUpdateAPIView
+
 router = DefaultRouter()
 
 router.register(r'evaluation', community_views.EvaluationViewSet)
@@ -66,7 +70,8 @@ urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
     path('api/v1/check_signature/', CheckSignatureAPIView.as_view(), name='check_signature'),
     re_path(r'^api/v1/', include(router.urls)),
-
+    path('api/v1/user_avatar/', WeChatUserAvatarUpdateAPIView.as_view(), name='wechat-user-avatar'),
+    path('api/v1/user_update/', WeChatUserUpdateAPIView.as_view(), name='wechat-user-update'),
     path('mdeditor/', include('mdeditor.urls'))
 ]
 

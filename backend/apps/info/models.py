@@ -1,3 +1,6 @@
+import os
+from datetime import datetime
+
 from django.contrib.auth import get_user_model
 from django.db import models
 from mdeditor.fields import MDTextField
@@ -11,7 +14,7 @@ class TelephoneDirectory(TimestampStatusMixin):
     便民电话
     """
     objects = models.Manager()
-    creator = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True,
+    creator = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, null=True, blank=True,
                                 verbose_name='创建者')
     title = models.CharField(max_length=100, verbose_name='名称')
     number = models.CharField(max_length=100, verbose_name='电话号码')
@@ -58,14 +61,18 @@ class News(TimestampStatusMixin):
     新闻
     """
 
+    today = datetime.today()
+    folder_name = today.strftime('%Y/%m/%d')
+
     objects = models.Manager()
-    creator = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True,
+    creator = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, null=True, blank=True,
                                 verbose_name='创建者')
     title = models.CharField(max_length=255, verbose_name='新闻标题')
     summary = models.TextField(max_length=100, null=True, blank=True, verbose_name='新闻摘要')
     content = MDTextField(verbose_name='新闻内容')
-    category = models.ForeignKey(NewsCategory, on_delete=models.CASCADE, verbose_name='新闻类别', blank=True, null=True)
-    image = models.ImageField(upload_to='upload/news', null=True, blank=True, verbose_name='新闻图片')
+    category = models.ForeignKey(NewsCategory, on_delete=models.DO_NOTHING, verbose_name='新闻类别', blank=True,
+                                 null=True)
+    image = models.ImageField(upload_to=f'upload/news/{folder_name}', null=True, blank=True, verbose_name='新闻图片')
     tags = models.ManyToManyField(to="NewsTags", verbose_name="新闻标签")
 
     class Meta:
@@ -80,14 +87,17 @@ class Activity(TimestampStatusMixin):
     """
     活动
     """
+    today = datetime.today()
+    folder_name = today.strftime('%Y/%m/%d')
     objects = models.Manager()
-    creator = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True,
+    creator = models.ForeignKey(get_user_model(), on_delete=models.DO_NOTHING, null=True, blank=True,
                                 verbose_name='创建者')
     title = models.CharField(max_length=255, verbose_name='活动标题')
     summary = models.TextField(max_length=100, null=True, blank=True, verbose_name='活动摘要')
     content = MDTextField(verbose_name='活动内容')
     category = models.CharField(max_length=100, null=True, blank=True, verbose_name='活动类别')
-    image = models.ImageField(upload_to='upload/activity', null=True, blank=True, verbose_name='活动图片')
+    image = models.ImageField(upload_to=f'upload/activity/{folder_name}', null=True, blank=True,
+                              verbose_name='活动图片')
 
     class Meta:
         verbose_name = '活动发布'
@@ -101,8 +111,10 @@ class Notification(TimestampStatusMixin):
     """
     通知管理
     """
+    today = datetime.today()
+    folder_name = today.strftime('%Y/%m/%d')
     objects = models.Manager()
-    sender = models.ForeignKey(get_user_model(), default=None, on_delete=models.CASCADE,
+    sender = models.ForeignKey(get_user_model(), default=None, on_delete=models.DO_NOTHING,
                                related_name='sent_notifications',
                                verbose_name='发送者')
     receivers = models.ManyToManyField(WeChatUser, related_name='received_notifications', verbose_name='接收者',
@@ -110,7 +122,7 @@ class Notification(TimestampStatusMixin):
     title = models.CharField(max_length=100, verbose_name='通知标题')
     summary = models.CharField(max_length=100, null=True, blank=True, verbose_name='通知摘要')
     content = models.TextField(verbose_name='通知内容')
-    attachment = models.FileField(upload_to='upload/attachment', null=True, blank=True, verbose_name='附件')
+    attachment = models.FileField(upload_to=f'upload/attachment/{folder_name}', null=True, blank=True, verbose_name='附件')
 
     class Meta:
         verbose_name = '通知发布'
