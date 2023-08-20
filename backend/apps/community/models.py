@@ -30,7 +30,7 @@ class FeedbackImages(TimestampStatusMixin):
     objects = models.Manager()
     today = datetime.today()
     folder_name = today.strftime('%Y/%m/%d')
-    image = models.ImageField(upload_to=F'upload/feedback{folder_name}', null=True, blank=True, verbose_name='图片')
+    image = models.ImageField(upload_to=F'upload/feedback/{folder_name}', null=True, blank=True, verbose_name='图片')
     feedback = models.ForeignKey(to='Feedback', on_delete=models.CASCADE, verbose_name='意见反馈',
                                  related_name='feedback_images')
 

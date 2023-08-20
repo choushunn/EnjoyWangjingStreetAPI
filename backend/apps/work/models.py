@@ -83,7 +83,7 @@ class TicketImage(TimestampStatusMixin):
     today = datetime.today()
     folder_name = today.strftime('%Y/%m/%d')
     ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE, verbose_name='工单', related_name='ticket_images')
-    image = models.ImageField(upload_to=F'upload/ticket{folder_name}', verbose_name='图片')
+    image = models.ImageField(upload_to=F'upload/ticket/{folder_name}', verbose_name='图片')
 
     class Meta:
         verbose_name = '工单图片'
@@ -124,7 +124,7 @@ class Ticket(TimestampStatusMixin):
 
     def save(self, *args, **kwargs):
         if self.pk:
-            original_instance = Appointment.objects.get(pk=self.pk)
+            original_instance = Ticket.objects.get(pk=self.pk)
             if original_instance.status != self.status:
                 status_display = dict(self.STATUS).get(self.status)
                 send_message(self.user, m_type="居民服务", content=f"您提交的居民服务 {status_display}。")

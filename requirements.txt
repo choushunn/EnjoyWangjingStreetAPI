@@ -18,3 +18,4 @@ gunicorn
 requests
 django-mdeditor
 django-simpleui
+django-debug-toolbar
