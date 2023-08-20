@@ -5,8 +5,8 @@ from simpleui.admin import AjaxAdmin
 from .models import Carousel, SystemParams, MenuCategory, MenuItem, Pages, Message
 from ..community.models import WeChatUser
 
-admin.site.site_title = "微信小程序后台管理系统"
-admin.site.site_header = "乐享王井街"
+admin.site.site_title = "乐享王井街微信小程序后台管理系统"
+admin.site.site_header = "乐享王井街后台管理系统"
 
 
 # class MyAdminlteConfig(AdminlteConfig):

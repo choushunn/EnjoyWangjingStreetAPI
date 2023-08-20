@@ -86,6 +86,7 @@ class NewsAdmin(admin.ModelAdmin):
         })
     )
     filter_horizontal = ('tags',)
+
     def save_model(self, request, obj, form, change):
         # 获取当前登录用户
         current_user = request.user
@@ -123,7 +124,7 @@ class ActivityAdmin(admin.ModelAdmin):
 
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'sender', 'title', 'is_active', 'created_at', 'updated_at')
+    list_display = ('id',  'title', 'is_active', 'created_at', 'updated_at')
     list_display_links = ('id', 'title',)
     list_filter = ('is_active',)
     ordering = list_display
@@ -134,13 +135,11 @@ class NotificationAdmin(admin.ModelAdmin):
     readonly_fields = ('id', 'sender', 'created_at', 'updated_at')
     fieldsets = (
         (None, {
-            'fields': ('title', 'summary', 'content', 'attachment')
+            'fields': ('title', 'summary', 'content', 'type', 'attachment')
         }),
-        ('接收人', {
-            'fields': ('receivers',)
-        })
     )
-    filter_horizontal = ('receivers',)
+
+    # filter_horizontal = ('receivers',)
 
     def save_model(self, request, obj, form, change):
         # 获取当前登录用户

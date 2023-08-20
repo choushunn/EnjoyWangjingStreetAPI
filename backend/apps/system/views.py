@@ -2,6 +2,7 @@ import hashlib
 import os
 
 from django.http import HttpResponse
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView
 
 from .models import Carousel, SystemParams, MenuItem, MenuCategory, Pages, Message
@@ -16,7 +17,7 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from .models import WeChatUser
-
+from django_filters import rest_framework as filters
 from ..common.auth import OpenidAuthentication
 from backend.settings import AVATAR_ROOT, AVATAR_URL
 
@@ -51,6 +52,8 @@ class MenuCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = MenuCategory.objects.all()
     serializer_class = MenuCategorySerializer
+    # filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
+    # filterset_fields = ['url', ]
 
 
 class PagesViewSet(viewsets.ReadOnlyModelViewSet):
@@ -201,11 +204,9 @@ class WeChatUserUpdateAPIView(APIView):
     authentication_classes = [OpenidAuthentication]
 
     def put(self, request, *args, **kwargs):
-
         user = request.user
         serializer = WeChatUserUpdateSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-

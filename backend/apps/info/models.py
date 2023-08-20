@@ -117,12 +117,14 @@ class Notification(TimestampStatusMixin):
     sender = models.ForeignKey(get_user_model(), default=None, on_delete=models.DO_NOTHING,
                                related_name='sent_notifications',
                                verbose_name='发送者')
-    receivers = models.ManyToManyField(WeChatUser, related_name='received_notifications', verbose_name='接收者',
-                                       blank=True)
+    # receivers = models.ManyToManyField(WeChatUser, related_name='received_notifications', verbose_name='接收者',
+    #                                    blank=True)
     title = models.CharField(max_length=100, verbose_name='通知标题')
     summary = models.CharField(max_length=100, null=True, blank=True, verbose_name='通知摘要')
-    content = models.TextField(verbose_name='通知内容')
-    attachment = models.FileField(upload_to=f'upload/attachment/{folder_name}', null=True, blank=True, verbose_name='附件')
+    content = MDTextField(verbose_name='通知内容')
+    type = models.CharField(max_length=100, null=True, blank=True, verbose_name='通知类型')
+    attachment = models.FileField(upload_to=f'upload/attachment/{folder_name}', null=True, blank=True,
+                                  verbose_name='附件')
 
     class Meta:
         verbose_name = '通知发布'

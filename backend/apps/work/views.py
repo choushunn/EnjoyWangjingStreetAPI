@@ -88,7 +88,7 @@ class TicketViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        send_message(request.user.id, m_type="居民服务", content="你已提交居民服务，请耐心等待工作人员的回复")
+        send_message(request.user.id, m_type="居民服务", content="你已提交居民服务，请等待工作人员的处理")
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def get_queryset(self):
