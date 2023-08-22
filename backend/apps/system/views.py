@@ -26,7 +26,7 @@ class CarouselViewSet(viewsets.ReadOnlyModelViewSet):
     """
     轮播图 GET
     """
-    queryset = Carousel.objects.all()
+    queryset = Carousel.objects.all().filter(is_active=True)
     serializer_class = CarouselSerializer
 
 
@@ -34,7 +34,7 @@ class SystemParamsViewSet(viewsets.ReadOnlyModelViewSet):
     """
     参数 GET
     """
-    queryset = SystemParams.objects.all()
+    queryset = SystemParams.objects.all().filter(is_active=True)
     serializer_class = SystemParamsSerializer
 
 
@@ -42,7 +42,7 @@ class MenuItemViewSet(viewsets.ReadOnlyModelViewSet):
     """
     菜单项 GET
     """
-    queryset = MenuItem.objects.all()
+    queryset = MenuItem.objects.all().filter(is_active=True)
     serializer_class = MenuItemSerializer
 
 
@@ -50,7 +50,7 @@ class MenuCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     """
     菜单类别 GET
     """
-    queryset = MenuCategory.objects.all()
+    queryset = MenuCategory.objects.all().filter(is_active=True)
     serializer_class = MenuCategorySerializer
     # filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
     # filterset_fields = ['url', ]
@@ -60,7 +60,7 @@ class PagesViewSet(viewsets.ReadOnlyModelViewSet):
     """
     菜单类别 GET
     """
-    queryset = Pages.objects.all()
+    queryset = Pages.objects.all().filter(is_active=True)
     serializer_class = PagesSerializer
 
 
@@ -78,7 +78,7 @@ class MessageViewSet(mixins.UpdateModelMixin,
 
     def get_queryset(self):
         # 当前用户的数据
-        return self.queryset.filter(receiver=self.request.user.id).order_by('-created_at')
+        return self.queryset.filter(receiver=self.request.user.id).order_by('-created_at').filter(is_active=True)
 
     @action(detail=True, methods=['post'])
     def mark_as_read(self, request, pk=None):
@@ -109,7 +109,7 @@ class WeChatUserViewSet(mixins.CreateModelMixin,
     authentication_classes = [OpenidAuthentication, ]
 
     def get_queryset(self):
-        return self.queryset.filter(id=self.request.user.id).order_by('-created_at')
+        return self.queryset.filter(id=self.request.user.id).order_by('-created_at').filter(is_active=True)
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
