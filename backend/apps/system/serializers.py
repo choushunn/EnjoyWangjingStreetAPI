@@ -47,9 +47,11 @@ class MenuCategorySerializer(serializers.ModelSerializer):
 
 
 class PagesSerializer(serializers.ModelSerializer):
+    created_at = serializers.DateTimeField(format="%Y年%m月%d日", allow_null=True, label='时间',
+                                           default=timezone.now)
     class Meta:
         model = Pages
-        exclude = ('is_active', 'is_deleted', 'created_at', 'updated_at')
+        exclude = ('is_active', 'is_deleted', 'updated_at')
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -152,3 +154,67 @@ class WeChatUserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = WeChatUser
         fields = ['nickname', 'name', 'gender', 'address']
+
+
+# class WeChatUserCreatePhoneSerializer(serializers.Serializer):
+#     open_id = serializers.SerializerMethodField(label='open_id')
+#     phone = serializers.SerializerMethodField(label='phone')
+#
+#     def get_open_id(self, obj):
+#         # pass
+#         # print(self.context['request'].data)
+#         js_code = self.context['request'].data.get('js_code') or None
+#         # 在这里进行open_id的处理逻辑，例如调用get_weixin_open_id函数
+#         if js_code:
+#             open_id = get_weixin_open_id(js_code)
+#             self.context['request'].data['open_id'] = open_id
+#             return open_id
+#         else:
+#             return None
+#
+#     def get_phone(self, obj):
+#         # pass
+#         phone_code = self.context['request'].data.get('phone_code')
+#         if phone_code:
+#             # 在这里进行phone的处理逻辑
+#             phone = get_weixin_phone(phone_code)
+#             self.context['request'].data['phone'] = phone
+#             return phone
+#         else:
+#             return None
+#
+#     def is_valid(self, raise_exception=False):
+#         validated = super().is_valid(raise_exception=raise_exception)
+#
+#         if validated:
+#             # 将 open_id 和 phone 添加到 validated_data
+#             self.validated_data['open_id'] = self.get_open_id(None)
+#             self.validated_data['phone'] = self.get_phone(None)
+#
+#         return validated
+#
+#
+
+
+class WeChatUserCreatePhoneSerializer:
+    def __init__(self, data, *args, **kwargs):
+        print(data)
+        self.js_code = data['js_code']
+        self.phone_code = data['phone_code']
+
+    def get_open_id(self):
+        if self.js_code:
+            open_id = get_weixin_open_id(self.js_code)
+            return open_id
+        else:
+            return None
+
+    def get_phone(self):
+        # pass
+        phone_code = self.phone_code
+        if phone_code:
+            # 在这里进行phone的处理逻辑
+            phone = get_weixin_phone(phone_code)
+            return phone
+        else:
+            return None

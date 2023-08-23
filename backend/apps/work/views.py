@@ -15,7 +15,7 @@ class AppointmentTypeViewSet(viewsets.ReadOnlyModelViewSet):
     """
     预约类型接口 GET
     """
-    queryset = AppointmentType.objects.all()
+    queryset = AppointmentType.objects.all().filter(is_active=True)
     serializer_class = AppointmentTypeSerializer
 
 
@@ -23,7 +23,7 @@ class AppointmentTimeViewSet(viewsets.ReadOnlyModelViewSet):
     """
     预约时间接口 GET
     """
-    queryset = AppointmentTime.objects.all()
+    queryset = AppointmentTime.objects.all().filter(is_active=True)
     serializer_class = AppointmentTimeSerializer
 
 
@@ -60,7 +60,7 @@ class TicketTypeViewSet(viewsets.ReadOnlyModelViewSet):
     """
     工单类型接口 GET
     """
-    queryset = TicketType.objects.all()
+    queryset = TicketType.objects.all().filter(is_active=True)
     serializer_class = TicketTypeSerializer
 
 

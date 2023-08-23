@@ -54,7 +54,6 @@ class ActiveCarouselManager(models.Manager):
 
 
 class Carousel(TimestampStatusMixin):
-
     title = models.CharField(max_length=255, verbose_name='标题')
     image = models.ImageField(upload_to='upload/carousel', verbose_name='轮播图')
     target_url = models.CharField(max_length=255, default='', blank=True, verbose_name='跳转链接')
@@ -129,11 +128,15 @@ class MenuColor(TimestampStatusMixin):
         return self.name
 
 
+from mdeditor.fields import MDTextField
+
+
+
 class Pages(TimestampStatusMixin):
     objects = models.Manager()
     name = models.CharField(max_length=255, unique=True, verbose_name='页面标识')
     title = models.CharField(max_length=255, verbose_name='页面标题')
-    content = models.TextField(verbose_name='页面内容')
+    content = MDTextField(verbose_name='页面内容')
     signature = models.CharField(max_length=255, default='', blank=True, verbose_name='页面署名')
 
     class Meta:

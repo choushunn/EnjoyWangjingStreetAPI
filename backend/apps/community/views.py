@@ -17,7 +17,7 @@ class EvaluationViewSet(viewsets.ModelViewSet):
     """
     评价接口 GET
     """
-    queryset = Evaluation.objects.all()
+    queryset = Evaluation.objects.all().filter(is_active=True)
     serializer_class = EvaluationSerializer
 
 
@@ -95,7 +95,7 @@ class ConsultPhoneViewSet(viewsets.ReadOnlyModelViewSet):
     """
     预约咨询接口 GET
     """
-    queryset = ConsultPhone.objects.all()
+    queryset = ConsultPhone.objects.all().filter(is_active=True)
     serializer_class = ConsultPhoneSerializer
 
 
@@ -103,7 +103,7 @@ class ConsultTimeViewSet(viewsets.ReadOnlyModelViewSet):
     """
     预约时间接口 GET
     """
-    queryset = ConsultTime.objects.all()
+    queryset = ConsultTime.objects.all().filter(is_active=True)
     serializer_class = ConsultTimeSerializer
 
 

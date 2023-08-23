@@ -1,6 +1,7 @@
 import hashlib
 import os
 
+import django_filters
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.views import APIView
@@ -8,7 +9,7 @@ from rest_framework.views import APIView
 from .models import Carousel, SystemParams, MenuItem, MenuCategory, Pages, Message
 from .serializers import CarouselSerializer, SystemParamsSerializer, MenuItemSerializer, MenuCategorySerializer, \
     PagesSerializer, MessageSerializer, WeChatUserSerializer, WeChatUserCreateSerializer, \
-    WeChatUserAvatarUpdateSerializer, WeChatUserUpdateSerializer
+    WeChatUserAvatarUpdateSerializer, WeChatUserUpdateSerializer, WeChatUserCreatePhoneSerializer
 
 from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
@@ -36,6 +37,7 @@ class SystemParamsViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = SystemParams.objects.all().filter(is_active=True)
     serializer_class = SystemParamsSerializer
+    # filter_backends = []
 
 
 class MenuItemViewSet(viewsets.ReadOnlyModelViewSet):
@@ -52,16 +54,16 @@ class MenuCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = MenuCategory.objects.all().filter(is_active=True)
     serializer_class = MenuCategorySerializer
-    # filter_backends = [filters.OrderingFilter, DjangoFilterBackend]
-    # filterset_fields = ['url', ]
+    filterset_fields = ['name', 'url']
 
 
 class PagesViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    菜单类别 GET
+    页面类别 GET
     """
     queryset = Pages.objects.all().filter(is_active=True)
     serializer_class = PagesSerializer
+    filterset_fields = ['name', ]
 
 
 class MessageViewSet(mixins.UpdateModelMixin,
@@ -210,3 +212,53 @@ class WeChatUserUpdateAPIView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class WeChatUserCreateAPIView(APIView):
+    """
+    用户注册接口
+    """
+
+    def post(self, request, *args, **kwargs):
+        print(request.data)
+        serializer = WeChatUserCreatePhoneSerializer(data=request.data)
+        open_id = serializer.get_open_id()
+        phone = serializer.get_phone()
+        try:
+            user = WeChatUser.objects.get(open_id=open_id)
+            # 手动签发jwt token
+            refresh = RefreshToken.for_user(user)
+            resp_data = {
+                'user_id': user.id,
+                "refresh": str(refresh),
+                "access": str(refresh.access_token)
+            }
+            return Response(resp_data, status=status.HTTP_200_OK)
+        except WeChatUser.DoesNotExist:
+            if phone and open_id:
+                # self.perform_create(serializer)
+                created_object = WeChatUser.objects.create(
+                    nickname='',
+                    avatar='',
+                    open_id=open_id,
+                    phone=phone
+                )
+                # 创建用户
+                user = created_object
+                # 手动签发jwt token
+                refresh = RefreshToken.for_user(user)
+                resp_data = {
+                    'user_id': user.id,
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token)
+                }
+                return Response(resp_data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(data={"message": "注册失败，参数错误"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
+from django.shortcuts import render
+
+
+def home(request):
+    return render(request, 'home.html')

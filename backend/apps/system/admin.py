@@ -63,6 +63,7 @@ class MenuCategoryAdmin(admin.ModelAdmin):
     exclude = ('is_deleted',)
     readonly_fields = ('id', 'created_at', 'updated_at')
     filter_horizontal = ('items',)
+
     fieldsets = [
         (
             None,
@@ -125,8 +126,15 @@ class PagesAdmin(admin.ModelAdmin):
     """
     页面管理
     """
-    fields = ('title', 'content')
-    list_display = ('id', 'title', 'is_active', 'created_at', 'updated_at')
+    fields = ('name', 'title', 'content', 'signature')
+    list_display = ('title', 'name', 'signature', 'is_active', 'created_at', 'updated_at')
+    list_display_links = ('name', 'title', 'signature')
+    ordering = list_display
+    list_editable = ('is_active',)
+    search_fields = ('name', 'title',)
+    date_hierarchy = 'created_at'
+    exclude = ('is_deleted',)
+    readonly_fields = ('id', 'created_at', 'updated_at')
 
 
 @admin.register(Message)

@@ -8,7 +8,7 @@ class TelephoneDirectoryViewSet(viewsets.ReadOnlyModelViewSet):
     """
     便民电话接口 GET
     """
-    queryset = TelephoneDirectory.objects.all()
+    queryset = TelephoneDirectory.objects.all().filter(is_active=True)
     serializer_class = TelephoneDirectorySerializer
 
 
@@ -16,7 +16,7 @@ class NewsViewSet(viewsets.ReadOnlyModelViewSet):
     """
     新闻接口 GET
     """
-    queryset = News.objects.all()
+    queryset = News.objects.all().filter(is_active=True)
     serializer_class = NewsSerializer
 
 
@@ -24,7 +24,7 @@ class ActivityViewSet(viewsets.ReadOnlyModelViewSet):
     """
     活动接口 GET
     """
-    queryset = Activity.objects.all()
+    queryset = Activity.objects.all().filter(is_active=True)
     serializer_class = ActivitySerializer
 
 
@@ -32,5 +32,5 @@ class NotificationViewSet(viewsets.ReadOnlyModelViewSet):
     """
     通知接口 GET
     """
-    queryset = Notification.objects.all()
+    queryset = Notification.objects.all().filter(is_active=True)
     serializer_class = NotificationSerializer

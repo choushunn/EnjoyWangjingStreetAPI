@@ -1,8 +1,4 @@
 from django.contrib import admin
-from django.db import models
-from django.forms import ClearableFileInput
-from django.utils.html import format_html
-from mdeditor.widgets import MDEditorWidget
 
 # Register your models here.
 
@@ -14,9 +10,9 @@ class TelephoneDirectoryAdmin(admin.ModelAdmin):
     """
     便民电话
     """
-    fields = ('title', 'number', 'address')
-    list_display = ('id', 'title', 'number', 'address', 'is_active', 'created_at', 'updated_at')
-    list_display_links = ('id', 'title', 'number', 'address')
+    fields = ('title', 'number', 'type', 'address')
+    list_display = ('title', 'number', 'address', 'is_active', 'created_at', 'updated_at')
+    list_display_links = ('title', 'number', 'address')
     ordering = list_display
     list_editable = ('is_active',)
     search_fields = ('title', 'number', 'address',)
@@ -37,8 +33,8 @@ class NewsTagsAdmin(admin.ModelAdmin):
     新闻管理
     """
     fields = ('name', 'color')
-    list_display = ('id', 'name', 'color', 'is_active', 'created_at', 'updated_at')
-    list_display_links = ('id', 'name', 'color',)
+    list_display = ('name', 'color', 'is_active', 'created_at', 'updated_at')
+    list_display_links = ('name', 'color',)
     list_filter = ('name', 'color', 'is_active',)
     ordering = list_display
     list_editable = ('is_active',)
@@ -70,8 +66,8 @@ class NewsAdmin(admin.ModelAdmin):
     """
     新闻管理
     """
-    list_display = ('id', 'title', 'summary', 'category', 'is_active', 'image', 'created_at', 'updated_at')
-    list_display_links = ('id', 'title', 'summary', 'category')
+    list_display = ('title', 'summary', 'category', 'is_active', 'image', 'created_at', 'updated_at')
+    list_display_links = ('title', 'summary', 'category')
     list_filter = ('category', 'is_active',)
     ordering = list_display
     list_editable = ('is_active',)
@@ -102,8 +98,8 @@ class ActivityAdmin(admin.ModelAdmin):
     活动管理
     """
     fields = ('title', 'content', 'summary', 'category', 'image')
-    list_display = ('id', 'title', 'is_active', 'created_at', 'updated_at')
-    list_display_links = ('id', 'title',)
+    list_display = ('title', 'is_active', 'created_at', 'updated_at')
+    list_display_links = ( 'title',)
     list_filter = ('is_active',)
     ordering = list_display
     list_editable = ('is_active',)
@@ -124,8 +120,8 @@ class ActivityAdmin(admin.ModelAdmin):
 
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
-    list_display = ('id',  'title', 'is_active', 'created_at', 'updated_at')
-    list_display_links = ('id', 'title',)
+    list_display = ( 'title', 'is_active', 'created_at', 'updated_at')
+    list_display_links = ( 'title',)
     list_filter = ('is_active',)
     ordering = list_display
     list_editable = ('is_active',)

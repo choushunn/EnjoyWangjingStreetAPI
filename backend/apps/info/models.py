@@ -19,6 +19,7 @@ class TelephoneDirectory(TimestampStatusMixin):
     title = models.CharField(max_length=100, verbose_name='名称')
     number = models.CharField(max_length=100, verbose_name='电话号码')
     address = models.CharField(max_length=100, default='', null=True, blank=True, verbose_name='所在地址')
+    type = models.CharField(max_length=100, default='单位', null=True, blank=True, verbose_name='类别')
 
     class Meta:
         verbose_name = '便民电话'

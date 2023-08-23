@@ -75,7 +75,9 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -145,7 +147,8 @@ AVATAR_URL = '/avatar/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
+# 关闭浏览器失效
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # CACHES = {
 #     "default": {
 #         "BACKEND": "django_redis.cache.RedisCache",
@@ -157,7 +160,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # }
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = ['https://*.yfengl.cn', 'https://*.enjoywangjing.cn']
+CSRF_TRUSTED_ORIGINS = ['https://*.yfengl.cn', 'https://*.enjoywangjing.cn', 'http://*.enjoywangjing.cn']
 
 CORS_ALLOW_HEADERS = [
     "accept",
@@ -191,8 +194,6 @@ REST_FRAMEWORK = {
     ),
 }
 
-
-
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
@@ -217,7 +218,6 @@ if DEBUG:
     INTERNAL_IPS = [
         '127.0.0.1',
     ]
-
 
 MDEDITOR_CONFIGS = {
     'default': {

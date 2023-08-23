@@ -13,15 +13,13 @@ from .models import TelephoneDirectory, Notification, News, Activity, NewsTags
 class TelephoneDirectorySerializer(serializers.ModelSerializer):
     class Meta:
         model = TelephoneDirectory
-        fields = ('id', 'title', 'number', 'address')
+        fields = ('id', 'title', 'number', 'address', 'type')
 
 
 class NewsTagsSerializer(serializers.ModelSerializer):
     class Meta:
         model = NewsTags
         exclude = ('is_active', 'is_deleted', 'updated_at', 'created_at', 'id')
-
-
 
 
 # class WeChatRichTextField(serializers.Field):
