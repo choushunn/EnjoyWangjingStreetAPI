@@ -127,7 +127,7 @@ class PagesAdmin(admin.ModelAdmin):
     页面管理
     """
     fields = ('name', 'title', 'content', 'signature')
-    list_display = ('title', 'name', 'signature', 'is_active', 'created_at', 'updated_at')
+    list_display = ( 'title', 'name', 'signature', 'is_active', 'created_at', 'updated_at')
     list_display_links = ('name', 'title', 'signature')
     ordering = list_display
     list_editable = ('is_active',)
