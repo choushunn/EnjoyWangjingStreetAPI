@@ -4,10 +4,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Favorite, \
-    Feedback, Evaluation, Consult, Report, ConsultPhone, ReportImage, FeedbackImages, ConsultTime
+    Feedback, Evaluation, Consult, Report, ConsultPhone, ReportImage, FeedbackImages, ConsultTime, ServiceList
 from .serializers import FavoriteSerializer, FeedbackSerializer, \
     EvaluationSerializer, ConsultSerializer, ReportSerializer, ConsultPhoneSerializer, ReportImageSerializer, \
-    FeedbackImagesSerializer, ConsultTimeSerializer
+    FeedbackImagesSerializer, ConsultTimeSerializer, ServiceListSerializer
 
 from ..common.auth import OpenidAuthentication
 from ..system.helpers import send_message
@@ -148,3 +148,11 @@ class FavoriteViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class ServiceListViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    预约时间接口 GET
+    """
+    queryset = ServiceList.objects.all().filter(is_active=True)
+    serializer_class = ServiceListSerializer

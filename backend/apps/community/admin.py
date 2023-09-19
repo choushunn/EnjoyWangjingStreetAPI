@@ -1,6 +1,22 @@
 from django.contrib import admin
 
-from .models import Evaluation, Feedback, Favorite, Consult, Report, ConsultPhone, ConsultTime
+from .models import Evaluation, Feedback, Favorite, Consult, Report, ConsultPhone, ConsultTime, ServiceList
+
+
+@admin.register(ServiceList)
+class ServiceListAdmin(admin.ModelAdmin):
+    """
+    预约时间管理
+    """
+    fields = ('sxmc', 'blfs', 'fwsj', 'bjsx', 'fwdx', 'sxyj')
+    list_display = ('id', 'sxmc', 'blfs', 'fwsj', 'bjsx', 'fwdx', 'sxyj','is_active', 'created_at', 'updated_at')
+    list_display_links = ('id', 'sxmc')
+    list_filter = ('is_active',)
+    ordering = list_display
+    list_editable = ('is_active',)
+    date_hierarchy = 'created_at'
+    exclude = ('is_deleted', 'is_active')
+    readonly_fields = ('id', 'created_at', 'updated_at')
 
 
 @admin.register(ConsultTime)

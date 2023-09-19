@@ -10,7 +10,7 @@ import os
 from django.utils import timezone
 from rest_framework import serializers
 from .models import Evaluation, \
-    Feedback, Favorite, Consult, Report, ReportImage, ConsultPhone, FeedbackImages, ConsultTime
+    Feedback, Favorite, Consult, Report, ReportImage, ConsultPhone, FeedbackImages, ConsultTime, ServiceList
 
 
 class EvaluationSerializer(serializers.ModelSerializer):
@@ -72,3 +72,9 @@ class ReportImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReportImage
         fields = ('id', 'image', 'report')
+
+
+class ServiceListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceList
+        exclude = ('is_active', 'is_deleted', 'updated_at', 'created_at')

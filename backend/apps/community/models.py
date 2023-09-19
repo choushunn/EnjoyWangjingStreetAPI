@@ -146,3 +146,23 @@ class Favorite(TimestampStatusMixin):
 
     def __str__(self):
         return self.item
+
+
+class ServiceList(TimestampStatusMixin):
+    """
+    公共服务清单
+    """
+    objects = models.Manager()
+    sxmc = models.CharField(max_length=100, verbose_name='事项名称')
+    blfs = models.CharField(max_length=100, default='直接办理', verbose_name='办理方式')
+    fwsj = models.CharField(max_length=100, default="09:00—17:00(周一至周五）", verbose_name='服务时间')
+    bjsx = models.CharField(max_length=100, default='即时办理', verbose_name='办结时限')
+    fwdx = models.CharField(max_length=100, default="辖区居民", verbose_name='服务对象')
+    sxyj = models.CharField(max_length=100, default="身份证、户口簿及相关证明材料", verbose_name='所需要件')
+
+    class Meta:
+        verbose_name = '服务清单'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.sxmc

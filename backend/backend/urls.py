@@ -27,8 +27,6 @@ from apps.info import views as info_views
 from apps.work import views as work_views
 from apps.system import views as system_views
 
-
-
 from apps.system.views import CheckSignatureAPIView
 
 from apps.system.views import WeChatUserAvatarUpdateAPIView
@@ -49,7 +47,7 @@ router.register(r'consult_time', community_views.ConsultTimeViewSet)
 router.register(r'consult_phone', community_views.ConsultPhoneViewSet)
 router.register(r'report_image', community_views.ReportImageViewSet)
 router.register(r'report', community_views.ReportViewSet)
-
+router.register(r'servicelist', community_views.ServiceListViewSet)
 router.register(r'telephone', info_views.TelephoneDirectoryViewSet)
 router.register(r'news', info_views.NewsViewSet)
 router.register(r'activity', info_views.ActivityViewSet)
@@ -87,6 +85,7 @@ urlpatterns += static('/avatar/', document_root=settings.AVATAR_ROOT)
 
 if settings.DEBUG:
     import debug_toolbar
+
     # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += [
         re_path(r'^__debug__/', include(debug_toolbar.urls)),
