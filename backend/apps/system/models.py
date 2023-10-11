@@ -31,6 +31,7 @@ class WeChatUser(TimestampStatusMixin):
     gender = models.IntegerField(default=3, choices=GENDER, null=True, blank=True, verbose_name='性别')
     role = models.IntegerField(default=0, choices=ROLES, null=True, blank=True, verbose_name='角色')
     name = models.CharField(max_length=100, null=True, blank=True, verbose_name='姓名')
+    is_notice = models.BooleanField(default=False, verbose_name='是否接收通知')
 
     class Meta:
         verbose_name = '微信用户'
@@ -129,7 +130,6 @@ class MenuColor(TimestampStatusMixin):
 
 
 from mdeditor.fields import MDTextField
-
 
 
 class Pages(TimestampStatusMixin):

@@ -112,14 +112,15 @@ def send_wx_message(message_data):
 import requests
 
 
-def send_subscription_message(openid, template_id, data):
+def send_subscription_message(openid, template_id, data, page="pages/index/index"):
     access_token = get_weixin_access_token()
     url = f"https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token={access_token}"
 
     payload = {
         "touser": openid,
         "template_id": template_id,
-        "data": data
+        "data": data,
+        "page": page,
     }
     response = requests.post(url, data=json.dumps(payload))
     if response.status_code == 200:
