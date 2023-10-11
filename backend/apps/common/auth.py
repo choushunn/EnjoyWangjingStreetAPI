@@ -39,3 +39,5 @@ class OpenidAuthentication(JWTAuthentication):
             raise AuthenticationFailed("当前用户未激活", code="user_inactive")
 
         return user
+
+

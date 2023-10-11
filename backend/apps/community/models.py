@@ -47,6 +47,7 @@ class Feedback(TimestampStatusMixin):
     objects = models.Manager()
     user = models.ForeignKey(WeChatUser, on_delete=models.DO_NOTHING, verbose_name='用户')
     content = models.TextField(verbose_name='反馈内容')
+    replay = models.TextField(verbose_name='意见回复', default=None, blank=True, null=True)
 
     class Meta:
         verbose_name = '意见反馈'
@@ -66,22 +67,20 @@ class Report(TimestampStatusMixin):
     """
     问题上报
     """
-    REPORT_TYPE = (
-        (0, '社区服务'), (1, '社区服务1'), (2, '社区服务2')
-    )
     objects = models.Manager()
     user = models.ForeignKey(WeChatUser, on_delete=models.DO_NOTHING, verbose_name='用户')
-    title = models.CharField(max_length=100, verbose_name='标题')
+    name = models.CharField(max_length=100, verbose_name='联系人')
     phone = models.CharField(max_length=100, verbose_name='联系电话')
-    type = models.IntegerField(choices=REPORT_TYPE, default=0, verbose_name='反馈类型')
+    address = models.CharField(max_length=255, verbose_name='地址', blank=True, null=True)
     content = models.TextField(verbose_name='反馈内容')
+    reply = models.TextField(verbose_name='回复内容', default=None, blank=True, null=True)
 
     class Meta:
         verbose_name = '问题上报'
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return self.title
+        return self.name
 
 
 class ConsultPhone(TimestampStatusMixin):

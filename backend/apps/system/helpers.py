@@ -5,6 +5,8 @@ Author: Spring
 Date: 14/08/2023
 Description: 
 """
+import json
+
 from .models import Message
 from typing import Any
 
@@ -105,3 +107,26 @@ def send_wx_message(message_data):
         print("订阅消息发送成功")
     else:
         print("订阅消息发送失败")
+
+
+import requests
+
+
+def send_subscription_message(openid, template_id, data):
+    access_token = get_weixin_access_token()
+    url = f"https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token={access_token}"
+
+    payload = {
+        "touser": openid,
+        "template_id": template_id,
+        "data": data
+    }
+    response = requests.post(url, data=json.dumps(payload))
+    if response.status_code == 200:
+        result = response.json()
+        if result.get("errcode") == 0:
+            print("订阅消息发送成功")
+        else:
+            print(f"订阅消息发送失败，错误代码：{result.get('errcode')}")
+    else:
+        print(f"订阅消息发送失败，HTTP错误代码：{response.status_code}")

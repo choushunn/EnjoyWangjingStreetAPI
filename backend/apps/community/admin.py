@@ -1,6 +1,9 @@
 from django.contrib import admin
+from django.http import JsonResponse
+from simpleui.admin import AjaxAdmin
 
 from .models import Evaluation, Feedback, Favorite, Consult, Report, ConsultPhone, ConsultTime, ServiceList
+from ..system.helpers import send_subscription_message
 
 
 @admin.register(ServiceList)
@@ -9,7 +12,7 @@ class ServiceListAdmin(admin.ModelAdmin):
     预约时间管理
     """
     fields = ('sxmc', 'blfs', 'fwsj', 'bjsx', 'fwdx', 'sxyj')
-    list_display = ('id', 'sxmc', 'blfs', 'fwsj', 'bjsx', 'fwdx', 'sxyj','is_active', 'created_at', 'updated_at')
+    list_display = ('id', 'sxmc', 'blfs', 'fwsj', 'bjsx', 'fwdx', 'sxyj', 'is_active', 'created_at', 'updated_at')
     list_display_links = ('id', 'sxmc')
     list_filter = ('is_active',)
     ordering = list_display
@@ -47,8 +50,11 @@ class EvaluationAdmin(admin.ModelAdmin):
     readonly_fields = ('id', 'created_at', 'updated_at')
 
 
+from datetime import datetime
+
+
 @admin.register(Feedback)
-class FeedbackAdmin(admin.ModelAdmin):
+class FeedbackAdmin(AjaxAdmin):
     """
     反馈管理
     """
@@ -68,9 +74,36 @@ class FeedbackAdmin(admin.ModelAdmin):
             {
                 'fields': ('user', 'content',)
             }
-        ),
+        ), (
+            '管理员回复',
+            {
+                'fields': ('replay',)
+            }
+        )
 
     )
+
+    def save_model(self, request, obj, form, change):
+        openid = obj.user.open_id
+        template_id = 'aAuVyMBl3gscHus9WJzI8wnWUj-rvpVdpdBlkmnJ754'
+        data = {
+            "thing1": {
+                "value": "反馈结果通知"
+            },
+            "time2": {
+                "value": obj.created_at.strftime("%Y-%m-%d %H:%M:%S")
+            },
+            "thing4": {
+                "value": obj.replay
+            },
+            "time5": {
+                "value": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
+        }
+
+        if 'replay' in form.changed_data:
+            send_subscription_message(openid, template_id, data)
+        obj.save()
 
 
 @admin.register(Consult)
@@ -125,27 +158,52 @@ class FavoriteAdmin(admin.ModelAdmin):
 @admin.register(Report)
 class ReportAdmin(admin.ModelAdmin):
     """
-    上报管理
+    问题上报
     """
-    list_display = ('id', 'user', 'title', 'phone', 'type', 'content', 'is_active', 'created_at', 'updated_at')
-    list_display_links = ('id', 'type', 'content')
-    list_filter = ('is_active', 'type',)
+    list_display = ('id', 'user', 'name', 'phone', 'address', 'content', 'is_active', 'created_at', 'updated_at')
+    list_display_links = ('id', 'address', 'content')
+    list_filter = ('is_active', 'address',)
     ordering = list_display
     list_editable = ('is_active',)
-    search_fields = ('title', 'phone', 'type', 'content',)
+    search_fields = ('title', 'phone', 'address', 'content',)
     date_hierarchy = 'created_at'
     exclude = ('is_deleted',)
-    readonly_fields = ('id', 'user', 'title', 'phone', 'type', 'content', 'created_at', 'updated_at')
+    readonly_fields = ('id', 'user', 'name', 'phone', 'address', 'content', 'created_at', 'updated_at')
     fieldsets = (
         (
             None,
             {
-                'fields': ('user', 'title', 'phone', 'type',)
+                'fields': ('user', 'name', 'phone', 'address','content')
             }
         ), (
-            '附件',
+            '回复',
             {
-                'fields': ('content',)
+                'fields': ('reply',)
             }
         )
     )
+
+    def save_model(self, request, obj, form, change):
+        openid = obj.user.open_id
+        template_id = 'aAuVyMBl3gscHus9WJzI80tADXMnBu48K0f6bMwvNe8'
+        data = {
+            "thing1": {
+                "value": obj.content
+            },
+            "time2": {
+                "value": obj.created_at.strftime("%Y-%m-%d %H:%M:%S")
+            },
+            "thing4": {
+                "value": obj.reply
+            },
+            "thing3": {
+                "value": "王井社区居委会"
+            },
+            "time5": {
+                "value": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }
+        }
+
+        if 'reply' in form.changed_data:
+            send_subscription_message(openid, template_id, data)
+        obj.save()
