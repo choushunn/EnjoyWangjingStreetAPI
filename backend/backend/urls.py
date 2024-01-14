@@ -65,6 +65,7 @@ router.register(r'appointment_time', work_views.AppointmentTimeViewSet)
 router.register(r'work', work_views.TicketViewSet)
 router.register(r'work_image', work_views.TicketImageViewSet)
 router.register(r'work_type', work_views.TicketTypeViewSet)
+router.register(r'work_review', work_views.TicketReviewViewSet)
 
 urlpatterns = [
     path('', system_views.home, name='home'),

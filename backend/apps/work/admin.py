@@ -120,3 +120,6 @@ class TicketAdmin(admin.ModelAdmin):
 @admin.register(TicketReview)
 class TicketReviewAdmin(admin.ModelAdmin):
     exclude = ('is_deleted', 'is_active')
+    list_display = (
+        'id', 'ticket', 'rating', 'created_at', 'updated_at')
+    list_display_links = ('id', 'ticket')

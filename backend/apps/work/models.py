@@ -47,7 +47,8 @@ class Appointment(TimestampStatusMixin):
     type = models.ForeignKey(AppointmentType, on_delete=models.CASCADE, verbose_name='预约类型', blank=True,
                              null=True)
     date = models.DateField(verbose_name='预约日期', blank=True, null=True)
-    time = models.ForeignKey(AppointmentTime, on_delete=models.DO_NOTHING, verbose_name='预约时间', blank=True, null=True)
+    time = models.ForeignKey(AppointmentTime, on_delete=models.DO_NOTHING, verbose_name='预约时间', blank=True,
+                             null=True)
     remark = models.TextField(verbose_name='其他备注信息', blank=True, null=True)
     status = models.IntegerField(choices=STATUS_CHOICES, default=0, verbose_name='预约状态')
     reply = models.TextField(verbose_name='回复', blank=True, null=True)
@@ -131,7 +132,7 @@ class Ticket(TimestampStatusMixin):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.user.nickname + '-'
+        return self.user.nickname + '-' + str(self.id)
 
 
 class TicketReview(TimestampStatusMixin):
@@ -153,4 +154,4 @@ class TicketReview(TimestampStatusMixin):
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return self.ticket
+        return str(self.ticket)

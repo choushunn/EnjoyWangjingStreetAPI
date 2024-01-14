@@ -1,11 +1,12 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Appointment, Ticket, TicketType, AppointmentType, AppointmentTime, TicketImage
+from .models import Appointment, Ticket, TicketType, AppointmentType, AppointmentTime, TicketImage, TicketReview
 from .serializers import AppointmentSerializer, TicketSerializer, TicketTypeSerializer, AppointmentTimeSerializer, \
-    AppointmentTypeSerializer, TicketImageSerializer
+    AppointmentTypeSerializer, TicketImageSerializer, TicketReviewSerializer
 
 from ..common.auth import OpenidAuthentication
 from ..system.helpers import send_message
@@ -70,6 +71,36 @@ class TicketImageViewSet(viewsets.ModelViewSet):
     """
     queryset = TicketImage.objects.all()
     serializer_class = TicketImageSerializer
+
+
+class TicketReviewViewSet(viewsets.ModelViewSet):
+    """
+    工单评价接口 GET/POST
+    """
+    queryset = TicketReview.objects.all()
+    serializer_class = TicketReviewSerializer
+    permission_classes = [IsAuthenticated]  # 权限
+    authentication_classes = [OpenidAuthentication, ]  # 认证
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['ticket']
+
+    def create(self, request, *args, **kwargs):
+        # 假设 'ticket_id' 是用于确定唯一工单的字段
+        ticket_id = request.data.get('ticket')
+
+        # 检查是否已存在该工单的评价
+        ticket_review = TicketReview.objects.filter(ticket_id=ticket_id).first()
+
+        if ticket_review:
+            # 如果存在，更新记录
+            serializer = self.get_serializer(ticket_review, data=request.data)
+        else:
+            # 如果不存在，创建新的记录
+            serializer = self.get_serializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class TicketViewSet(viewsets.ModelViewSet):
